@@ -7,6 +7,9 @@ import path from 'path';
 // import favicon from 'serve-favicon';
 
 import index from './routes/index';
+import signup from './routes/signup';
+
+
 
 const app = express();
 const debug = Debug('crypto-martket-watcher:app');
@@ -27,10 +30,37 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 
+app.route('/signup')
+.get(function(req, res){
+    if(typeof req.session.isLoggedIn !== 'undefined' && req.session.isLoggedIn){
+        res.redirect('/index');
+    }
+    res.render('pages/signup', {errors: [''], message: ''});
+})
+.post(function(req, res){
+
+    const fullName = req.body.fullname;
+    const userName = req.body.username;
+    const email = req.body.email;
+    const password = req.body.password;
+    const retypePassword = req.body.confirmpassword;
+
+    userModel.signUp(fullName, userName, email, password, retypePassword, function(result){
+        console.log(result);
+        if(result.status == 'success'){
+            res.redirect('/');
+        }else{
+            res.render('pages/signup', {errors: result.data, message: result.message});
+        }
+
+    });
+});
+
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   const err = new Error('Not Found');
   err.status = 404;
+  +
   next(err);
 });
 
