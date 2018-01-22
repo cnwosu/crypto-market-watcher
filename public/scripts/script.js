@@ -12,7 +12,8 @@ $(function() {
             $('#login-form-link').removeClass('active');
             $(this).addClass('active');
             e.preventDefault();
-        });
-    
-    });
+        });    
+});
+
+function login 
     
